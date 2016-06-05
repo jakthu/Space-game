@@ -77,10 +77,11 @@
 
 		function addBullet(){
 			game.projectiles.push({
-				x: game.player.x,
-				y: game.player.y,
-				width: 20,
+				width: 10,
 				height: 20,
+				x: game.player.x + game.player.width/2 - 5,
+				//x: game.player.x + 40,
+				y: game.player.y,
 				image: 2 //the 2nd image imported (see the list)
 			});
 		}
@@ -227,7 +228,7 @@
 			}
 			for(i in game.projectiles){
 				var proj = game.projectiles[i];
-				game.contextEnemies.clearRect(proj.x - 30, proj.y, proj.width + 80, proj.height);				
+				game.contextEnemies.clearRect(proj.x - 30, proj.y + 10, proj.width + 80, proj.height + 10);				
 				game.contextEnemies.drawImage(game.images[proj.image], proj.x, proj.y, proj.width, proj.height);
 			}
 			if(game.gameOver){
