@@ -17,11 +17,16 @@
 		game.enemies = [];
 
 		game.images = [];
+		//game.enemyimages = [];
 		game.doneImages = 0;
 		game.requiredImages = 0;
 
 		game.gameOver = false;
 		game.gameWon = false;
+		
+		game.waveStarted = false;
+		game.wave = 0;
+		game.maxWave = 2;
 
 		game.count = 24;
 		game.division = 48; //timer for when the enemies move
@@ -82,7 +87,7 @@
 				x: game.player.x + game.player.width/2 - 5,
 				//x: game.player.x + 40,
 				y: game.player.y,
-				image: 2 //the 2nd image imported (see the list)
+				image: 1 //the 2nd image imported (see the list)
 			});
 		}
 
@@ -95,6 +100,7 @@
 				});
 			}
 			//game.contextPlayer.drawImage(game.images[0], 10, 10, 100, 100);
+			/*
 			for(y =0;y<5;y++){
 				for(x=0;x<5;x++){
 					game.enemies.push({
@@ -108,6 +114,8 @@
 					});
 				}
 			}
+			*/
+			nextWave();
 			loop();
 			setTimeout(function(){
 				game.moving = true;
@@ -188,7 +196,7 @@
 					if(collision(game.enemies[m], game.projectiles[p])){
 						game.enemies[m].dead = true;
 						game.explodeSound.play();
-						game.enemies[m].image = 3;
+						game.enemies[m].image = 5;
 						game.contextEnemies.clearRect(game.projectiles[p].x, game.projectiles[p].y, game.projectiles[p].width, game.projectiles[p].height);
 						game.projectiles.splice(p,1);
 					}
@@ -200,13 +208,38 @@
 				}
 				if(game.enemies[i].dead && game.enemies[i].deadTime <= 0){
 					game.enemies.splice(i,1);
-					game.contextEnemies.clearRect(game.enemies[i].x, game.enemies.y[i], game.enemies.width[i], game.enemies.height[i]);
+					//game.contextEnemies.clearRect(game.enemies[i].x, game.enemies.y[i], game.enemies.width[i], game.enemies.height[i]);
 				}
 			}
 			if(game.enemies.length <= 0){
-				game.gameWon = true;
-
+				nextWave();
 			}
+		}
+		
+		function nextWave(){
+			if(!game.gameWon && !game.gameOver){
+				game.waveStarted = false;
+				game.wave++;
+				if(game.wave>game.maxWave)
+				{
+					console.log("won");
+					game.gameWon = true;
+				}
+				for(y =0;y<game.wave && game.wave<game.maxWave+1;y++){
+					for(x=0;x<5;x++){
+						game.enemies.push({
+							x: (x * 70) + (10 * x) + 80,
+							y: y * 70 + (10 * y) + 40,
+							width: 70,
+							height: 70,
+							image: 2 + game.wave, //number reference to enemy image
+							dead: false,
+							deadTime: 20
+						});
+					}
+				}
+			}
+			game.waveStarted = true;
 		}
 
 		function render(){
@@ -245,6 +278,7 @@
 			requestAnimFrame(function(){
 				loop();
 			});
+			//nextWave();
 			update();
 			render();
 		}
@@ -281,7 +315,7 @@
 		game.contextBackground.font = "bold 50px monaco";
 		game.contextBackground.fillStyle = "white";
 		game.contextBackground.fillText("loading", game.width / 2 - 100, game.height / 2 - 25);
-		initImages(["player.png", "enemy.png", "bullet.png", "explosion.png"]);
+		initImages(["player.png", "bullet.png", "explosion.png", "enemy.png", "enemy2.png", "blank.png"]);
 		checkImages();
 		//init(); //must call it to make the function run
 		//update();
